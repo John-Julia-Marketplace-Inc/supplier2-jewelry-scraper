@@ -16,6 +16,14 @@ jobs:
       - name: Pull Private Repository
         run: |
           git clone https://${{ secrets.PRIVATE_REPO_PAT }}@github.com/${{ secrets.PRIVATE_REPO_URL}}.git private_repo
+    
+      - name: Set up environment and run script with secrets
+        run: |
+            echo "Setting up environment variables"
+        env:
+            SUPPLIER_URL: ${{ secrets.SUPPLIER_URL }}
+            LOGIN: ${{ secrets.LOGIN }}
+            PASSWORD: ${{ secrets.PASSWORD }}
 
       # Step 3: Set Up Python Environment and Install Dependencies
       - name: Set up Python
@@ -25,6 +33,9 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
+          export SUPPLIER_URL="${{ secrets.SUPPLIER_URL }}"
+          export LOGIN="${{ secrets.LOGIN }}"
+          export PASSWORD="${{ secrets.PASSWORD }}"
           pip install pandas requests lxml selenium 
 
       # Step 4: Scrape Data and Generate CSV
