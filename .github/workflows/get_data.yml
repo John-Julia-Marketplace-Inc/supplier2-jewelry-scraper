@@ -16,8 +16,6 @@ jobs:
       - name: Pull Private Repository
         run: |
           git clone https://${{ secrets.PRIVATE_REPO_PAT }}@github.com/${{ secrets.PRIVATE_REPO_URL}}.git private_repo
-        env:
-          PRIVATE_REPO_PAT: ${{ secrets.PRIVATE_REPO_PAT }}
 
       # Step 3: Set Up Python Environment and Install Dependencies
       - name: Set up Python
