@@ -1,0 +1,47 @@
+name: Scrape Data and Trigger Private Repo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  scrape-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the public repository to use as the base directory
+      - name: Checkout Public Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Pull the Private Repository
+      - name: Pull Private Repository
+        run: |
+          git clone https://${{ secrets.PRIVATE_REPO_PAT }}@github.com/${{ secrets.PRIVATE_REPO_URL}}.git private_repo
+        env:
+          PRIVATE_REPO_PAT: ${{ secrets.PRIVATE_REPO_PAT }}
+
+      # Step 3: Set Up Python Environment and Install Dependencies
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Python Dependencies
+        run: |
+          pip install pandas requests lxml selenium 
+
+      # Step 4: Scrape Data and Generate CSV
+      - name: Scrape Data
+        run: |
+          echo "Scraping data and generating CSV..."
+          python /home/runner/work/supplier2-jewelry-scraper/supplier2-jewelry-scraper/get_data.py
+      
+      - name: Push Cleaned Data Back to Private Repository
+        run: |
+            cd private_repo
+            git config user.name "GitHub Action"
+            git config user.email "action@github.com"
+            git add .
+            git commit -m "Processed data from public repo" || echo "No changes to commit"
+            git push
+        env:
+            PRIVATE_REPO_PAT: ${{ secrets.PRIVATE_REPO_PAT }}https://${{ secrets.PROFILE_URL }}:${{secrets.PUBLIC_PAT}}@github.com/${{ secrets.PRIVATE_REPO_URL }}.git
