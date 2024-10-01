@@ -33,15 +33,15 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          export SUPPLIER_URL="${{ secrets.SUPPLIER_URL }}"
-          export LOGIN="${{ secrets.LOGIN }}"
-          export PASSWORD="${{ secrets.PASSWORD }}"
           pip install pandas requests lxml selenium 
 
       # Step 4: Scrape Data and Generate CSV
       - name: Scrape Data
         run: |
           echo "Scraping data and generating CSV..."
+          export SUPPLIER_URL="${{ secrets.SUPPLIER_URL }}"
+          export LOGIN="${{ secrets.LOGIN }}"
+          export PASSWORD="${{ secrets.PASSWORD }}"
           python /home/runner/work/supplier2-jewelry-scraper/supplier2-jewelry-scraper/get_data.py
       
       - name: Push Cleaned Data Back to Private Repository
