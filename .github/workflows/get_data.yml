@@ -2,7 +2,8 @@ name: Scrape Data and Trigger Private Repo
 
 on:
   workflow_dispatch:
-
+  schedule: 
+    - cron: '0 */2 * * *'  
 jobs:
   scrape-data:
     runs-on: ubuntu-latest
