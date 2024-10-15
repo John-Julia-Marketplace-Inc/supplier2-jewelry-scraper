@@ -305,4 +305,5 @@ def final_prep():
     # get zero inventory
     zero_inventory = all_skus[~all_skus['SKU'].isin(data['SKU'])]
     zero_inventory.to_csv('private_repo/clean_data/zero_inventory.csv', index=False)
+    data.to_csv('private_repo/clean_data/new_jewelry_cleaned.csv', index=False)
     
