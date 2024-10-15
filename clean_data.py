@@ -279,7 +279,7 @@ def prepare_data():
                 'Clean Images': [row['Images']]
             }).to_csv(filename, index=False, mode='a', header=not os.path.exists(filename))
         except AttributeError:
-            print('Missing price for SKU:', row['SKU']) 
+            print('Missing price for SKU:') 
             
             
 def final_prep():

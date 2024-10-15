@@ -221,15 +221,22 @@ def get_general_info(driver):
             product_code = product_code_element.text.split(":")[1].strip()
     except Exception as e:
         print(f"Error finding product code: {e}")
+        
+    stock_status = 'In Stock'
+    try:
+        stock_status = driver.find_element(By.CSS_SELECTOR, 'div.outofstockpdp').text
+        stock_status = 'OUT OF STOCK'
+    except:
+        pass
 
     size_and_fit_info, details_info = get_size_and_fit_details(driver)
     sizes_and_quantities = get_table_data(driver)
 
         
     if discounted_cost != 'N/A':    
-        return product_name, brand_name, product_image_links_str, discounted_cost, not_discounted_cost, product_code, details_info, size_and_fit_info, description, sizes_and_quantities, collection, breadcrumbs
+        return product_name, brand_name, product_image_links_str, discounted_cost, not_discounted_cost, product_code, details_info, size_and_fit_info, description, sizes_and_quantities, collection, breadcrumbs, stock_status
     else:
-        return product_name, brand_name, product_image_links_str, price, price, product_code, details_info, size_and_fit_info, description, sizes_and_quantities, collection, breadcrumbs
+        return product_name, brand_name, product_image_links_str, price, price, product_code, details_info, size_and_fit_info, description, sizes_and_quantities, collection, breadcrumbs, stock_status
 
 
 def parser(url, collection, pages):
@@ -264,8 +271,7 @@ def parser(url, collection, pages):
             counter = start
         else:
             url = f'{url}?p={pages}'
-        
-        print('URL:', url)
+    
         driver.get(url)
         time.sleep(3)
 
@@ -298,7 +304,7 @@ def parser(url, collection, pages):
                         EC.presence_of_element_located((By.CSS_SELECTOR, 'div.single-image img'))
                     )
                     
-                    product_name, brand_name, product_image_links_str, discounted_cost, not_discounted_cost, product_code, details, size_and_fit, description, sizes_and_quantities, collection, breadcrumbs = get_general_info(driver)
+                    product_name, brand_name, product_image_links_str, discounted_cost, not_discounted_cost, product_code, details, size_and_fit, description, sizes_and_quantities, collection, breadcrumbs, stock_status = get_general_info(driver)
                     
                     sizes_and_quantities = preprocess_sizes_quantities(sizes_and_quantities)
                     
@@ -311,6 +317,7 @@ def parser(url, collection, pages):
                         'Breadcrumbs': [breadcrumbs],
                         'Details': [details],
                         'Size and Fit': [size_and_fit],
+                        'Stock Status': [stock_status],
                         'Description': [description],
                         'Collection': [collection],
                         'Sizes and Quantities': [sizes_and_quantities],
@@ -333,8 +340,6 @@ def parser(url, collection, pages):
                 next_button_href = next_button.get_attribute('href')
                 driver.get(next_button_href)
                 time.sleep(5)
-                
-                print('NEW PAGE:')
                 
             except Exception as e:
                 print("No more pages or error navigating to the next page")
@@ -378,7 +383,7 @@ if __name__ == "__main__":
             except Exception as e:
                 print(f"Exception occurred: {e}")
 
-    final_prep()    
+    # final_prep()    
     end_time = time.time()  
     execution_time = end_time - start_time
 
