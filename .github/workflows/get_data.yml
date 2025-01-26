@@ -44,6 +44,7 @@ jobs:
           export LOGIN="${{ secrets.LOGIN }}"
           export PASSWORD="${{ secrets.PASSWORD }}"
           python /home/runner/work/supplier2-jewelry-scraper/supplier2-jewelry-scraper/get_data.py
+          python /home/runner/work/supplier2-jewelry-scraper/supplier2-jewelry-scraper/clean_data.py
       
       - name: Push Cleaned Data Back to Private Repository
         run: |
@@ -56,13 +57,13 @@ jobs:
         env:
             PRIVATE_REPO_PAT: ${{ secrets.PRIVATE_REPO_PAT }}https://${{ secrets.PROFILE_URL }}:${{secrets.PUBLIC_PAT}}@github.com/${{ secrets.PRIVATE_REPO_URL }}.git
 
-      - name: Trigger Public Repo Workflow
-        run: |
-            curl -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.PRIVATE_REPO_PAT }}" \
-            https://api.github.com/repos/${{ secrets.PRIVATE_REPO_URL }}/dispatches \
-            -d '{"event_type": "shopify_steps"}'
+      # - name: Trigger Public Repo Workflow
+      #   run: |
+      #       curl -X POST \
+      #       -H "Accept: application/vnd.github+json" \
+      #       -H "Authorization: Bearer ${{ secrets.PRIVATE_REPO_PAT }}" \
+      #       https://api.github.com/repos/${{ secrets.PRIVATE_REPO_URL }}/dispatches \
+      #       -d '{"event_type": "shopify_steps"}'
 
   keepalive-job:
         name: Keepalive Workflow
